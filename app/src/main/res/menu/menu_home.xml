@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".HomeActivity">
+    <item android:id="@+id/action_filter" android:title="@string/action_filter" android:icon="@drawable/ic_filter_list_white_48dp"
+        android:orderInCategory="100" android:showAsAction="ifRoom" />
+</menu>

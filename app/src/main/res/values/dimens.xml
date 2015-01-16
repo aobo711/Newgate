@@ -1,0 +1,11 @@
+<resources>
+
+    <dimen name="title">17dp</dimen>
+    <dimen name="rating">15dip</dimen>
+    <dimen name="tag">13dip</dimen>
+    <dimen name="meta">12dip</dimen>
+
+    <dimen name="small_text">12dip</dimen>
+    <dimen name="ptr_header_footer_padding">5dip</dimen>
+
+</resources>
