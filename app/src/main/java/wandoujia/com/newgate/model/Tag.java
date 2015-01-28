@@ -1,8 +1,8 @@
 package wandoujia.com.newgate.model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Tag {
+public class Tag implements Serializable {
     private int id;
     private String name, color;
 

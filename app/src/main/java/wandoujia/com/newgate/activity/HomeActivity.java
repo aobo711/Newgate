@@ -1,232 +1,114 @@
 package wandoujia.com.newgate.activity;
 
-import android.app.ActionBar;
-import android.app.ListActivity;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.AbsListView;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import wandoujia.com.newgate.R;
 import wandoujia.com.newgate.adapter.CustomNewsListAdapter;
+import wandoujia.com.newgate.fragment.NavigationDrawerFragment;
 import wandoujia.com.newgate.model.News;
-import wandoujia.com.newgate.model.Tag;
 import wandoujia.com.newgate.util.EndlessScrollListener;
+import wandoujia.com.newgate.util.HomeDataServices;
 
-public class HomeActivity extends ListActivity {
-    private static final String TAG = HomeActivity.class.getSimpleName();
-    private static final String REGRESH_FLAG_PULLDOWN = "pullDown";
-    private static final String REGRESH_FLAG_SCROLL = "scroll";
-    private static final String REGRESH_FLAG_INIT = "init";
+public class HomeActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener,NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private static String url = "http://100.64.82.6/v1/news/";
+    public static final String EXTRA_NEWS = "news";
 
     private LinkedList<News> newsList = new LinkedList<News>();
-    private ListView listView;
-    private CustomNewsListAdapter adapter;
-    private PullToRefreshListView pullToRefreshView;
-    private ActionBar actionBar;
-    private int actionBarHeight;
-    RelativeLayout ptrWrapper;
+    private ListView mListView;
+    private CustomNewsListAdapter mAdapter;
+    private HomeDataServices homeDataServices;
+    private DrawerLayout mDrawerLayout;
+    private SwipeRefreshLayout mRefreshLayout;
+    private NavigationDrawerFragment mDrawerListview;
 
-    private OnRefreshListener2 onRefreshListener2 = new OnRefreshListener2<ListView>() {
+    private EndlessScrollListener mEndlessScrollListener = new EndlessScrollListener() {
         @Override
-        public void onPullDownToRefresh(PullToRefreshBase<ListView> listViewPullToRefreshBase) {
-            new GetDataTask().execute("pullDown");
-        }
-        @Override
-        public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+        public void onLoadMore(int page, int totalItemsCount) {
+            homeDataServices.requestNews(HomeDataServices.REGRESH_FLAG_SCROLL);
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
-        actionBar = getActionBar();
-        actionBarHeight = actionBar.getHeight();
-        ptrWrapper =  (RelativeLayout) findViewById(R.id.ptr_wrapper);
 
-        // set something up for pull to refresh
-        pullToRefreshView = (PullToRefreshListView) findViewById(R.id.pull_to_refresh_listview);
-        pullToRefreshView.setOnRefreshListener(onRefreshListener2);
-        pullToRefreshView.setPullToRefreshOverScrollEnabled(false);
-        pullToRefreshView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
-        adapter = new CustomNewsListAdapter(this, newsList);
+        // pull down to refresh
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mRefreshLayout.setOnRefreshListener(this);
+        setLoadingAppearance();
 
-        // bind endless scroll listener
-        listView = pullToRefreshView.getRefreshableView();
-        listView.setOnScrollListener(new EndlessScrollListener() {
-
-            private int mLastFirstVisibleItem;
-
+        // 1. fetching data from api
+        // 2. binding on click event listener for list item
+        mListView = (ListView) findViewById(R.id.pull_to_refresh_listview);
+        mAdapter = new CustomNewsListAdapter(this, R.layout.list_row, newsList);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-
-                if (mLastFirstVisibleItem < firstVisibleItem) {
-                    if (actionBar.isShowing()) {
-                        actionBar.hide();
-                        ptrWrapper.setPadding(0, 0, 0, 0);
-                    }
-                }
-
-                if (mLastFirstVisibleItem > firstVisibleItem) {
-                    if (!actionBar.isShowing()) {
-                        actionBar.show();
-                        ptrWrapper.setPadding(0, 0, 0, 0);
-                    }
-                }
-                mLastFirstVisibleItem = firstVisibleItem;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            openNewsDetail(newsList.get(position));
             }
 
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                new GetDataTask().execute("scroll");
-            }
         });
 
-        pullToRefreshView.setAdapter(adapter);
+        // endless scrolling for loading more data
+        mListView.setOnScrollListener(mEndlessScrollListener);
 
-        // first time fetching news
-        requestData(REGRESH_FLAG_INIT);
+        // initialization list view
+        homeDataServices = new HomeDataServices(this, newsList, mRefreshLayout, mAdapter);
+        homeDataServices.requestNews(HomeDataServices.REGRESH_FLAG_INIT);
 
+        // drawer layout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerListview = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.drawer_listview);
+        // render left drawer UI
+        mDrawerListview.setUp(R.id.left_drawer, mDrawerLayout, mToolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    private void openNewsDetail(News news){
+        Intent intent = new Intent(HomeActivity.this, DetailActivity.class);
+        intent.putExtra(EXTRA_NEWS, news);
+        startActivity(intent);
+        Log.d(HomeDataServices.class.getSimpleName(), "onCreate() Restoring previous state");
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    /**
-     * Fetch news from server side.
-     * @param refreshFlag has three options. "pullDown" for checking updates when the list has been pulled down
-     *                    "init" for first time rendering;
-     *                    and others for loading more news when pulling up.
-     */
-    private void requestData(final String refreshFlag){
-        String listingUrl;
-        switch (refreshFlag){
-            case REGRESH_FLAG_PULLDOWN:
-                listingUrl = String.format("%s?start=0&max=10&refresh=1", url);
-            case REGRESH_FLAG_INIT:
-                listingUrl = String.format("%s?start=0&max=10", url);
-                break;
-            case REGRESH_FLAG_SCROLL:
-                listingUrl = String.format("%s?start=%s&max=10", url, newsList.size());
-                break;
-            default:
-                listingUrl = String.format("%s?start=%s&max=10", url, newsList.size());
-                break;
-        }
-        JsonArrayRequest newsReq = new JsonArrayRequest(listingUrl,
-            new Response.Listener<JSONArray>() {
-
-                int currentListSize = newsList.size();
-
-                @Override
-                public void onResponse(JSONArray response) {
-                Log.d(TAG, response.toString());
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-
-                        JSONObject obj = response.getJSONObject(i);
-                        News news = new News();
-                        news.setId(obj.getInt("id"));
-                        news.setTitle(obj.getString("title"));
-                        news.setDate(obj.getString("created_at"));
-                        news.setFirstVideo(obj.getString("first_video"));
-
-                        JSONArray tagsArry = obj.getJSONArray("tags");
-                        ArrayList<Tag> tags = new ArrayList<Tag>();
-                        for (int j = 0; j < tagsArry.length(); j++) {
-                            Tag tag =  new Tag();
-                            JSONObject jOjb = (JSONObject) tagsArry.get(j);
-                            tag.setId(jOjb.getInt("id"));
-                            tag.setName(jOjb.getString("name"));
-                            tag.setColor(jOjb.getString("color"));
-
-                            tags.add(tag);
-                        }
-                        news.setTags(tags);
-                        if (!refreshFlag.equals(REGRESH_FLAG_PULLDOWN)){
-                            newsList.add(news);
-                        }else{
-                            if(!newsList.contains(news)){
-                                newsList.addFirst(news);
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-                if(newsList.size() == currentListSize + 10){
-                    newsList.subList(0, 10);
-                }
-                adapter.notifyDataSetChanged();
-
-                // no need to call refresh callback
-                if(refreshFlag != REGRESH_FLAG_INIT){
-                    pullToRefreshView.onRefreshComplete();
-                }
-                }
-            }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                mRefreshLayout.setRefreshing(false);
+                homeDataServices.requestNews(HomeDataServices.REGRESH_FLAG_PULLDOWN);
             }
-        });
+        }, 1000);
+    }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(newsReq);
+    private void setLoadingAppearance() {
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+    public void onNavigationDrawerItemSelected(int position) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private class GetDataTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            return new String(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            requestData(result);
-            super.onPostExecute(result);
-        }
     }
 }

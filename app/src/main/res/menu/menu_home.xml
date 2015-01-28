@@ -1,5 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".HomeActivity">
-    <item android:id="@+id/action_filter" android:title="@string/action_filter" android:icon="@drawable/ic_filter_list_white_48dp"
-        android:orderInCategory="100" android:showAsAction="ifRoom" />
+    <!--<item android:id="@+id/action_filter" android:title="@string/action_filter" android:icon="@drawable/ic_menu_moreoverflow_mtrl_alpha"-->
+        <!--android:orderInCategory="100" app:showAsAction="always" >-->
+    <!--</item>-->
+    <item android:id="@+id/drawer_indicator" android:title="@string/action_filter" android:icon="@drawable/ic_arrow_back_white_48dp"
+        android:orderInCategory="100" app:showAsAction="always" >
+    </item>
 </menu>

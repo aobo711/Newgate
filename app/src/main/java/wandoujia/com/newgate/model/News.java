@@ -1,21 +1,24 @@
 package wandoujia.com.newgate.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class News {
-    private String title, firstVideo, date;
+public class News implements Serializable {
+    private String title, firstVideo, date, thumbnail;
+    private String content;
     private int id;
     private ArrayList<Tag> tags;
 
     public News() {
     }
 
-    public News(int id, String name, String firstVideo, String date, ArrayList<Tag> tags) {
+    public News(int id, String name, String firstVideo, String date, ArrayList<Tag> tags, String thumbnail) {
         this.id = id;
         this.title = name;
         this.firstVideo = firstVideo;
         this.date = date;
         this.tags = tags;
+        this.thumbnail = thumbnail;
     }
     public int getId(){return id;}
 
@@ -52,6 +55,14 @@ public class News {
     public void setTags(ArrayList<Tag> tags) {
         this.tags = tags;
     }
+
+    public String getContent(){return content;}
+
+    public void setContent(String content){ this.content = content; }
+
+    public String getThumbnail(){return thumbnail;}
+
+    public void setThumbnail(String thumbnail){ this.thumbnail = thumbnail; }
 
     @Override
     public boolean equals(Object other) {

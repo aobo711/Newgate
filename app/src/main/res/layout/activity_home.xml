@@ -1,23 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?android:attr/actionBarSize"
-    android:animateLayoutChanges="true"
-    tools:context=".HomeActivity"
-    android:id="@+id/ptr_wrapper">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/app_primary_dark"
+    tools:context=".HomeActivity">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/pull_to_refresh_listview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:divider="@color/list_divider"
-        android:dividerHeight="0.5dp"
-        ptr:ptrFriction="3.0"
-        ptr:ptrSmoothScrollDuration="400"
-        ptr:ptrAnimationStyle="custom"
-        android:listSelector="@drawable/list_row_selector" />
-
-
-</RelativeLayout>
+    <android.support.v4.widget.DrawerLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/drawer_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <include layout="@layout/activity_home_content" />
+        <include layout="@layout/activity_home_drawer" />
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

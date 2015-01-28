@@ -1,11 +1,15 @@
 <resources>
 
-    <dimen name="title">17dp</dimen>
-    <dimen name="rating">15dip</dimen>
-    <dimen name="tag">13dip</dimen>
+    <dimen name="title">16dp</dimen>
     <dimen name="meta">12dip</dimen>
+    <dimen name="up_votes">16dip</dimen>
+    <dimen name="tag_margin">5dip</dimen>
 
+    <dimen name="status_bar_compat_padding">0.0dip</dimen>
+    <dimen name="medium_text">16.0dip</dimen>
+    <dimen name="large_text">18.0dip</dimen>
     <dimen name="small_text">12dip</dimen>
+    <dimen name="summary_text">14dip</dimen>
     <dimen name="ptr_header_footer_padding">5dip</dimen>
-
+    <dimen name="toolbar_elevation">4dip</dimen>
 </resources>

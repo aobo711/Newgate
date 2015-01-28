@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DrawerOption>
+    <option>
+        <icon>ic_town_hall7</icon>
+        <title>1-7本</title>
+        <hint>初始阶段</hint>
+        <value>7</value>
+    </option>
+    <option>
+        <icon>ic_town_hall8</icon>
+        <title>8本</title>
+        <hint>初始阶段</hint>
+        <value>8</value>
+    </option>
+    <option>
+        <icon>ic_town_hall9</icon>
+        <title>9本</title>
+        <hint>初始阶段</hint>
+        <value>9</value>
+    </option>
+    <option>
+        <icon>ic_town_hall10</icon>
+        <title>10本</title>
+        <hint>初始阶段</hint>
+        <value>10</value>
+    </option>
+</DrawerOption>

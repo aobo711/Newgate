@@ -3,14 +3,25 @@
 
     <color name="genre">#666666</color>
     <color name="year">#888888</color>
-    <color name="list_divider">#dfdfdf</color>
+    <color name="list_divider">#ededed</color>
     <color name="list_row_start_color">#ffffff</color>
     <color name="list_row_end_color">#ffffff</color>
-    <color name="list_row_hover_start_color">#ebeef0</color>
-    <color name="list_row_hover_end_color">#ebeef0</color>
-    <color name="app_main_color">#03a9f4</color>
+    <color name="list_row_hover_start_color">#eeeeee</color>
+    <color name="list_row_hover_end_color">#eeeeee</color>
     <color name="white">#ffffff</color>
+
+    <color name="amber_50">#FFF8E1</color>
+    <color name="amber_700">#FFA000</color>
+    <color name="app_primary">#fdc02f</color>
+    <color name="app_primary_dark">#fdb538</color>
+    <color name="app_accent">#ff1234</color>
+
+    <color name="actionbar_title">#666666</color>
+    <color name="actionbar_bg">#efefef</color>
     <color name="title_color">#333333</color>
     <color name="meta_color">#999999</color>
+
+    <color name="layout_background">#ffffff</color>
+
 
 </resources>

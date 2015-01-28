@@ -2,11 +2,22 @@
 <resources>
 
     <string name="app_name">部落冲突攻略</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="detail_title">攻略详情</string>
     <string name="action_settings">Settings</string>
     <string name="action_filter">filter</string>
+    <string name="no_newer_news">暂无新文章</string>
     <!-- pull to refresh-->
     <string name="pull_label"></string>
     <string name="release_label"></string>
     <string name="refresh_label"></string>
+
+    <string name="th_level_7">1-7 本</string>
+    <string name="th_level_8">8 本</string>
+    <string name="th_level_9">9 本</string>
+    <string name="th_level_10">10 本</string>
+
+    <string name="tower_hall_select">选择大本营等级</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="back">返回</string>
 </resources>

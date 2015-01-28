@@ -2,15 +2,15 @@ package wandoujia.com.newgate.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,12 +21,13 @@ import wandoujia.com.newgate.model.News;
 import wandoujia.com.newgate.model.Tag;
 
 public class CustomNewsListAdapter extends BaseAdapter {
-    private Activity activity;
-    private LayoutInflater inflater;
+    private Context mContext;
+    private int layoutResourceId;
     private List<News> newsItems;
 
-    public CustomNewsListAdapter(Activity activity, List<News> newsItems) {
-        this.activity = activity;
+    public CustomNewsListAdapter(Context context, int layoutResourceId, List<News> newsItems) {
+        this.mContext = context;
+        this.layoutResourceId = layoutResourceId;
         this.newsItems = newsItems;
     }
 
@@ -48,21 +49,26 @@ public class CustomNewsListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (inflater == null)
-            inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
-            convertView = inflater.inflate(R.layout.list_row, null);
+        if (convertView == null){
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            convertView = inflater.inflate(layoutResourceId, null);
+        }
+        News news = newsItems.get(position);
 
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView date = (TextView) convertView.findViewById(R.id.date);
-        TextView tags = (TextView) convertView.findViewById(R.id.tags);
+        LinearLayout tagsContainer = (LinearLayout) convertView.findViewById(R.id.tags);
+        TextView content = (TextView) convertView.findViewById(R.id.content);
+//        ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
+
+        // ref:http://stackoverflow.com/questions/2160619/android-ellipsize-multiline-textview
+        content.setMaxLines(2);
 
         // getting movie data for the row
-        News n = newsItems.get(position);
-        String titleText = n.getTitle();
 
-        if(TextUtils.isEmpty(n.getFirstVideo())){
+        String titleText = news.getTitle();
+
+        if(TextUtils.isEmpty(news.getFirstVideo())){
             title.setText(titleText);
         }else{
             final String img = String.format("<img src=\"%s\"/>", R.drawable.ic_play);
@@ -70,32 +76,39 @@ public class CustomNewsListAdapter extends BaseAdapter {
             title.setText(Html.fromHtml(html, new Html.ImageGetter() {
                 @Override
                 public Drawable getDrawable(final String source) {
-                    Drawable d = null;
-                    try {
-                        d = activity.getResources().getDrawable(Integer.parseInt(source));
-                        d.setBounds(0, 0, 72, 72);
-                    } catch (Resources.NotFoundException e) {
-                        Log.e("log_tag", "Image not found. Check the ID.", e);
-                    } catch (NumberFormatException e) {
-                        Log.e("log_tag", "Source string not a valid resource ID.", e);
-                    }
-
+                    Drawable d = mContext.getResources().getDrawable(Integer.parseInt(source));
+                    d.setBounds(0, 0, 58, 58);
                     return d;
                 }
             }, null));
         }
 
-        date.setText(n.getDate());
+        date.setText(news.getDate());
 
-        ArrayList<Tag> tagsArry = n.getTags();
+        ArrayList<Tag> tagsArry = news.getTags();
 
-        String tagsStr = new String();
+        tagsContainer.removeAllViews();
 
         for (int i = 0; i < tagsArry.size(); i++) {
+            // additional layout is for attaching margin-right for dynamic text view
+            RelativeLayout textViewLayout = (RelativeLayout) View.inflate(mContext, R.layout.tag_textview, null);
+            TextView textView = (TextView) textViewLayout.findViewById(R.id.tag_textview);
             Tag tag = (Tag) tagsArry.get(i);
-            tagsStr += String.format("<font color=\"%s\">#%s</font>", tag.getColor(), tag.getName());
+            textView.setText(tag.getName());
+
+            tagsContainer.addView(textViewLayout);
         }
-        tags.setText(Html.fromHtml(tagsStr));
+
+
+        content.setText(news.getContent());
+
+//        String thumbnailSrc = n.getThumbnail();
+//        if(TextUtils.isEmpty(thumbnailSrc)){
+//            thumbnail.setMaxHeight(0);
+//            thumbnail.setMaxWidth(0);
+//        }else{
+//            new ImageDownloaderTask(thumbnail).execute(thumbnailSrc);
+//        }
 
         return convertView;
     }

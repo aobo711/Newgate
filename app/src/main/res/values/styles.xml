@@ -1,8 +1,27 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
+    <style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">@color/app_primary</item>
+    </style>
+
+    <style name="ToolbarPopup" parent="@style/ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextView" parent="@android:style/Widget.Holo.Light.TextView">
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="Theme.System" parent="@style/Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="Theme.Base" parent="@style/Theme.System">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/app_primary</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <item name="colorAccent">@color/app_accent</item>
+    </style>
+
+    <style name="Theme" parent="@style/Theme.Base" />
 </resources>

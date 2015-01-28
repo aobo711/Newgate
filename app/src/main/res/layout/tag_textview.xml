@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_marginEnd="@dimen/tag_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tag_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/tag_margin"
+        android:background="@drawable/shape_radius"
+        android:textColor="@color/amber_700"
+        android:textSize="@dimen/meta" >
+    </TextView>
+</RelativeLayout>
