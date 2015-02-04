@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/app_primary_dark"
+    android:weightSum="1">
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="请告诉我们你遇到的问题，或对我们的建议："
+            android:id="@+id/textView"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/meta_color"
+            android:layout_marginTop="20dp"
+            android:lines="1" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/form_desc"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:autoText="false"
+            android:editable="true"
+            android:elegantTextHeight="false"
+            android:lines="3"
+            android:maxLines="5"
+            android:linksClickable="true"
+            android:background="@drawable/edit_text"
+            android:paddingStart="5dp"
+            android:textSize="@dimen/medium_text"
+            android:gravity="top"
+            android:textColor="@color/text_field" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="你的联系方式："
+            android:id="@+id/textView2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/meta_color" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/form_contact"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:editable="true"
+            android:elegantTextHeight="false"
+            android:lines="1"
+            android:maxLines="1"
+            android:background="@drawable/edit_text"
+            android:paddingStart="5dp"
+            android:textSize="@dimen/medium_text"
+            android:textColor="@color/text_field" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:text="提交"
+            android:id="@+id/form_submit"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_text"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:background="@drawable/button_selector" />
+
+    </LinearLayout>
+
+</LinearLayout>

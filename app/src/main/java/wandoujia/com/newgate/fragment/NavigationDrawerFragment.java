@@ -2,6 +2,7 @@ package wandoujia.com.newgate.fragment;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +29,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import wandoujia.com.newgate.R;
+import wandoujia.com.newgate.activity.FeedbackActivity;
 import wandoujia.com.newgate.adapter.CustomDrawerListAdapter;
 import wandoujia.com.newgate.model.DrawerOption;
 
-/**
- * Fragment used for managing interactions for and presentation of a navigation drawer.
- * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
- * design guidelines</a> for a complete explanation of the behaviors implemented here.
- */
 public class NavigationDrawerFragment extends Fragment {
 
     /**
@@ -65,6 +63,9 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+    // setting options in drawer
+    ArrayList<DrawerOption> options;
 
     private CustomDrawerListAdapter mDrawerListAdapter;
 
@@ -99,14 +100,14 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mDrawerListView = (ListView) inflater.inflate(R.layout.fragment_drawer_listview, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+            selectItem(position);
             }
         });
-
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -125,7 +126,7 @@ public class NavigationDrawerFragment extends Fragment {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
-        ArrayList<DrawerOption> options = null;
+        options = null;
         try {
             options = getXMLfromResource();
         } catch (IOException e) {
@@ -134,7 +135,7 @@ public class NavigationDrawerFragment extends Fragment {
             e.printStackTrace();
         }
         if(options != null){
-            mDrawerListAdapter = new CustomDrawerListAdapter(getActivity(),options);
+            mDrawerListAdapter = new CustomDrawerListAdapter(getActivity(), R.layout.drawer_list_row, options);
         }
         mDrawerListView.setAdapter(mDrawerListAdapter);
 
@@ -183,7 +184,8 @@ public class NavigationDrawerFragment extends Fragment {
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
-            openDrawer();
+            // comment this out of this version, users don't need the drawer
+//            openDrawer();
         }
 
         // Defer code dependent on restoration of previous instance state.
@@ -193,7 +195,6 @@ public class NavigationDrawerFragment extends Fragment {
                 mDrawerToggle.syncState();
             }
         });
-
     }
 
     private ArrayList<DrawerOption> getXMLfromResource() throws IOException, XmlPullParserException {
@@ -246,8 +247,12 @@ public class NavigationDrawerFragment extends Fragment {
 
     public void selectItem(int position) {
         mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
+        if(options !=  null){
+            DrawerOption option = options.get(position);
+            if(TextUtils.equals(option.getValue(), "feedback")){
+                Intent intent = new Intent(getActivity().getApplicationContext(), FeedbackActivity.class);
+                startActivity(intent);
+            }
         }
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);

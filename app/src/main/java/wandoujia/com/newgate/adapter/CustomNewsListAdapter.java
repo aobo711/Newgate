@@ -2,13 +2,14 @@ package wandoujia.com.newgate.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.text.Html;
+import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,19 +18,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wandoujia.com.newgate.R;
+import wandoujia.com.newgate.activity.DetailActivity;
+import wandoujia.com.newgate.activity.TagActivity;
 import wandoujia.com.newgate.model.News;
 import wandoujia.com.newgate.model.Tag;
+import wandoujia.com.newgate.util.NewsDataServices;
 
 public class CustomNewsListAdapter extends BaseAdapter {
     private Context mContext;
     private int layoutResourceId;
     private List<News> newsItems;
+    public static final String EXTRA_NEWS = "news";
+    public static final String EXTRA_TAG = "tag";
 
     public CustomNewsListAdapter(Context context, int layoutResourceId, List<News> newsItems) {
         this.mContext = context;
         this.layoutResourceId = layoutResourceId;
         this.newsItems = newsItems;
     }
+
+    private View.OnClickListener onNewsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Integer rowPosition = (Integer) v.getTag();
+            openNewsDetail(newsItems.get(rowPosition));
+        }
+    };
+    private View.OnClickListener onTagClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String tag = (String) v.getTag();
+            openNewsTag(tag);
+        }
+    };
 
     @Override
     public int getCount() {
@@ -59,28 +80,17 @@ public class CustomNewsListAdapter extends BaseAdapter {
         TextView date = (TextView) convertView.findViewById(R.id.date);
         LinearLayout tagsContainer = (LinearLayout) convertView.findViewById(R.id.tags);
         TextView content = (TextView) convertView.findViewById(R.id.content);
-//        ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
+        ImageView iconPlay = (ImageView) convertView.findViewById(R.id.play_icon);
 
         // ref:http://stackoverflow.com/questions/2160619/android-ellipsize-multiline-textview
         content.setMaxLines(2);
 
-        // getting movie data for the row
-
-        String titleText = news.getTitle();
+        title.setText(news.getTitle());
 
         if(TextUtils.isEmpty(news.getFirstVideo())){
-            title.setText(titleText);
+            iconPlay.setVisibility(View.GONE);
         }else{
-            final String img = String.format("<img src=\"%s\"/>", R.drawable.ic_play);
-            final String html = titleText + img;
-            title.setText(Html.fromHtml(html, new Html.ImageGetter() {
-                @Override
-                public Drawable getDrawable(final String source) {
-                    Drawable d = mContext.getResources().getDrawable(Integer.parseInt(source));
-                    d.setBounds(0, 0, 58, 58);
-                    return d;
-                }
-            }, null));
+            iconPlay.setVisibility(View.VISIBLE);
         }
 
         date.setText(news.getDate());
@@ -95,7 +105,8 @@ public class CustomNewsListAdapter extends BaseAdapter {
             TextView textView = (TextView) textViewLayout.findViewById(R.id.tag_textview);
             Tag tag = (Tag) tagsArry.get(i);
             textView.setText(tag.getName());
-
+            textViewLayout.setTag(tag.getName());
+            textViewLayout.setOnClickListener(onTagClickListener);
             tagsContainer.addView(textViewLayout);
         }
 
@@ -110,7 +121,27 @@ public class CustomNewsListAdapter extends BaseAdapter {
 //            new ImageDownloaderTask(thumbnail).execute(thumbnailSrc);
 //        }
 
+        title.setTag(Integer.valueOf(position));
+        content.setTag(Integer.valueOf(position));
+
+        title.setOnClickListener(onNewsClickListener);
+        content.setOnClickListener(onNewsClickListener);
+
         return convertView;
     }
 
+
+    private void openNewsTag(String tag){
+        Intent intent = new Intent(mContext, TagActivity.class);
+        intent.putExtra(EXTRA_TAG, tag);
+        mContext.startActivity(intent);
+        Log.d(NewsDataServices.class.getSimpleName(), "onCreate() Restoring previous state");
+    }
+
+    private void openNewsDetail(News news){
+        Intent intent = new Intent(mContext, DetailActivity.class);
+        intent.putExtra(EXTRA_NEWS, news);
+        mContext.startActivity(intent);
+        Log.d(NewsDataServices.class.getSimpleName(), "onCreate() Restoring previous state");
+    }
 }

@@ -2,6 +2,7 @@
 
     <dimen name="title">16dp</dimen>
     <dimen name="meta">12dip</dimen>
+    <dimen name="option_title">15dp</dimen>
     <dimen name="up_votes">16dip</dimen>
     <dimen name="tag_margin">5dip</dimen>
 

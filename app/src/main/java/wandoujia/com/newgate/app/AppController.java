@@ -11,10 +11,18 @@ import com.android.volley.toolbox.Volley;
 
 public class AppController extends Application {
 
-    public static String API_NEWS_PREFIX = "http://play.wandoujia.com/v1/news/";
-    public static String WEB_URL_NEWS_PREFIX = "http://play.wandoujia.com/news/";
-//    public static String API_NEWS_PREFIX = "http://192.168.0.100/v1/news/";
-//    public static String WEB_URL_NEWS_PREFIX = "http://192.168.0.100/news/";
+    public static String API_PREFIX = "http://play.wandoujia.com/v1/";
+    public static String WEB_PREFIX = "http://play.wandoujia.com/";
+//    public static String API_PREFIX = "http://192.168.0.102/v1/";
+//    public static String WEB_PREFIX = "http://192.168.0.102/";
+
+    public static String API_FEEDBACK = API_PREFIX + "feedback/";
+    public static String API_NEWS_PREFIX = API_PREFIX + "news/";
+    public static String API_TAG_PREFIX =  API_PREFIX + "tags/";
+    public static String WEB_URL_NEWS_PREFIX = WEB_PREFIX + "news/";
+
+    public static String PREF_USER_SELECTED_FILTER = "news_filter";
+
     /**
      * Log or request TAG
      */
