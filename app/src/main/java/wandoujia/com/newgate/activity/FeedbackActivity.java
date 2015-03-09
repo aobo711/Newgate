@@ -94,7 +94,6 @@ public class FeedbackActivity extends ActionBarActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyError e = error;
-                System.console().printf(error.getMessage());
             }
         }){
             @Override

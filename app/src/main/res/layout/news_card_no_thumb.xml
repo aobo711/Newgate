@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/card_gap"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/title"
+        android:textSize="@dimen/title"
+        android:autoText="false"
+        android:text="title"
+        android:textColor="@color/title_color"
+        android:maxLines="2"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:layout_marginTop="@dimen/card_padding"
+        android:layout_marginRight="@dimen/card_padding"
+        android:layout_marginBottom="@dimen/card_padding" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/content"
+        android:maxLines="3"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:layout_marginRight="@dimen/card_padding"
+        android:layout_marginBottom="@dimen/card_padding"
+        android:textColor="@color/meta_color"
+        android:ellipsize="end"
+        android:lineSpacingExtra="3dp" />
+
+    <LinearLayout
+        android:background="@drawable/layout_border_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tags"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:paddingTop="12dip"
+        android:paddingBottom="@dimen/card_padding" />
+</LinearLayout>

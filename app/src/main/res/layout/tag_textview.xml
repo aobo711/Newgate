@@ -8,9 +8,9 @@
         android:id="@+id/tag_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/tag_margin"
+        android:layout_marginRight="@dimen/card_padding"
         android:background="@drawable/shape_radius"
         android:textColor="@color/amber_700"
-        android:textSize="@dimen/meta" >
+        android:textSize="@dimen/tag" >
     </TextView>
 </RelativeLayout>

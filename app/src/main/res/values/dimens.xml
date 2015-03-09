@@ -1,10 +1,15 @@
 <resources>
 
     <dimen name="title">16dp</dimen>
-    <dimen name="meta">12dip</dimen>
+    <dimen name="meta">11dip</dimen>
+    <dimen name="tag">13dip</dimen>
     <dimen name="option_title">15dp</dimen>
     <dimen name="up_votes">16dip</dimen>
-    <dimen name="tag_margin">5dip</dimen>
+    <dimen name="tag_margin">8dip</dimen>
+    <dimen name="card_padding">10dip</dimen>
+    <dimen name="card_gap">15dip</dimen>
+    <dimen name="min_card_padding">4dip</dimen>
+    <dimen name="tab_text">14dip</dimen>
 
     <dimen name="status_bar_compat_padding">0.0dip</dimen>
     <dimen name="medium_text">16.0dip</dimen>
@@ -13,4 +18,6 @@
     <dimen name="summary_text">14dip</dimen>
     <dimen name="ptr_header_footer_padding">5dip</dimen>
     <dimen name="toolbar_elevation">4dip</dimen>
+
+    <dimen name="tab_height">48dip</dimen>
 </resources>

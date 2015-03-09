@@ -1,18 +1,18 @@
 package wandoujia.com.newgate.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 import wandoujia.com.newgate.R;
 import wandoujia.com.newgate.activity.DetailActivity;
 import wandoujia.com.newgate.activity.TagActivity;
+import wandoujia.com.newgate.app.AppController;
 import wandoujia.com.newgate.model.News;
 import wandoujia.com.newgate.model.Tag;
-import wandoujia.com.newgate.util.NewsDataServices;
 
 public class CustomNewsListAdapter extends BaseAdapter {
     private Context mContext;
@@ -30,6 +30,9 @@ public class CustomNewsListAdapter extends BaseAdapter {
     private List<News> newsItems;
     public static final String EXTRA_NEWS = "news";
     public static final String EXTRA_TAG = "tag";
+    private LayoutInflater inflater;
+
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public CustomNewsListAdapter(Context context, int layoutResourceId, List<News> newsItems) {
         this.mContext = context;
@@ -69,35 +72,33 @@ public class CustomNewsListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-        if (convertView == null){
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            convertView = inflater.inflate(layoutResourceId, null);
+        if( convertView == null){
+            holder = new ViewHolder();
+            convertView = LayoutInflater.from(mContext).inflate(layoutResourceId, null);
+            holder.title = (TextView) convertView.findViewById(R.id.title);
+            holder.date = (TextView) convertView.findViewById(R.id.date);
+            holder.tagsContainer = (LinearLayout) convertView.findViewById(R.id.tags);
+            holder.thumbnail = (NetworkImageView) convertView.findViewById(R.id.thumbnail);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder) convertView.getTag();
         }
+
+        if (imageLoader == null) {
+            imageLoader = AppController.getInstance().getImageLoader();
+        }
+
         News news = newsItems.get(position);
 
-        TextView title = (TextView) convertView.findViewById(R.id.title);
-        TextView date = (TextView) convertView.findViewById(R.id.date);
-        LinearLayout tagsContainer = (LinearLayout) convertView.findViewById(R.id.tags);
-        TextView content = (TextView) convertView.findViewById(R.id.content);
-        ImageView iconPlay = (ImageView) convertView.findViewById(R.id.play_icon);
+        holder.title.setText(news.getTitle());
 
-        // ref:http://stackoverflow.com/questions/2160619/android-ellipsize-multiline-textview
-        content.setMaxLines(2);
-
-        title.setText(news.getTitle());
-
-        if(TextUtils.isEmpty(news.getFirstVideo())){
-            iconPlay.setVisibility(View.GONE);
-        }else{
-            iconPlay.setVisibility(View.VISIBLE);
-        }
-
-        date.setText(news.getDate());
+        holder.date.setText(news.getDate());
 
         ArrayList<Tag> tagsArry = news.getTags();
 
-        tagsContainer.removeAllViews();
+        holder.tagsContainer.removeAllViews();
 
         for (int i = 0; i < tagsArry.size(); i++) {
             // additional layout is for attaching margin-right for dynamic text view
@@ -107,27 +108,31 @@ public class CustomNewsListAdapter extends BaseAdapter {
             textView.setText(tag.getName());
             textViewLayout.setTag(tag.getName());
             textViewLayout.setOnClickListener(onTagClickListener);
-            tagsContainer.addView(textViewLayout);
+            holder.tagsContainer.addView(textViewLayout);
         }
 
 
-        content.setText(news.getContent());
+//        content.setText(news.getContent());
 
-//        String thumbnailSrc = n.getThumbnail();
-//        if(TextUtils.isEmpty(thumbnailSrc)){
-//            thumbnail.setMaxHeight(0);
-//            thumbnail.setMaxWidth(0);
-//        }else{
-//            new ImageDownloaderTask(thumbnail).execute(thumbnailSrc);
-//        }
+        String thumbnailSrc = news.getThumbnail();
+        if(TextUtils.isEmpty(thumbnailSrc)){
+//            holder.thumbnail.setVisibility(View.INVISIBLE);
+//            holder.thumbnail.setBackground(((Activity) mContext).getDrawable(R.drawable.ic_play));
+        }else{
+            holder.thumbnail.setImageUrl(thumbnailSrc, imageLoader);
+        }
 
-        title.setTag(Integer.valueOf(position));
-        content.setTag(Integer.valueOf(position));
-
-        title.setOnClickListener(onNewsClickListener);
-        content.setOnClickListener(onNewsClickListener);
+        holder.title.setTag(Integer.valueOf(position));
+        holder.title.setOnClickListener(onNewsClickListener);
 
         return convertView;
+    }
+
+    class ViewHolder{
+        TextView title;
+        TextView date;
+        LinearLayout tagsContainer;
+        NetworkImageView thumbnail;
     }
 
 
@@ -135,13 +140,11 @@ public class CustomNewsListAdapter extends BaseAdapter {
         Intent intent = new Intent(mContext, TagActivity.class);
         intent.putExtra(EXTRA_TAG, tag);
         mContext.startActivity(intent);
-        Log.d(NewsDataServices.class.getSimpleName(), "onCreate() Restoring previous state");
     }
 
     private void openNewsDetail(News news){
         Intent intent = new Intent(mContext, DetailActivity.class);
         intent.putExtra(EXTRA_NEWS, news);
         mContext.startActivity(intent);
-        Log.d(NewsDataServices.class.getSimpleName(), "onCreate() Restoring previous state");
     }
 }

@@ -7,39 +7,32 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.hannesdorfmann.swipeback.Position;
-import com.hannesdorfmann.swipeback.SwipeBack;
-import com.hannesdorfmann.swipeback.transformer.SlideSwipeBackTransformer;
 
 import wandoujia.com.newgate.R;
 import wandoujia.com.newgate.app.AppController;
 import wandoujia.com.newgate.model.News;
+import wandoujia.com.newgate.util.VideoEnabledWebChromeClient;
 import wandoujia.com.newgate.util.WebViewPlugin;
+import wandoujia.com.newgate.view.VideoEnabledWebView;
 
 public class DetailActivity extends ActionBarActivity {
-    private WebView webView;
+    private VideoEnabledWebView webView;
+    private VideoEnabledWebChromeClient webChromeClient;
+
     private static final String PLUGIN_WEBVIEW = "webview";
     private ActionBar mActionbar;
     private News mNews;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SwipeBack.attach(this, Position.LEFT)
-                .setDrawOverlay(true)
-                .setSwipeBackTransformer(new SlideSwipeBackTransformer(){
-                    @Override
-                    public void onSwiping(SwipeBack swipeBack, float openRatio, int pixelOffset) {
-                        super.onSwiping(swipeBack, openRatio, pixelOffset);
-                    }
-
-                })
-                .setContentView(R.layout.activity_news_detail)
-                .setSwipeBackView(R.layout.custom_swipe_back);
+        setContentView(R.layout.activity_news_detail);
 
         Intent intent = getIntent();
         if(intent == null){
@@ -52,16 +45,72 @@ public class DetailActivity extends ActionBarActivity {
         mActionbar.setDisplayHomeAsUpEnabled(true);
         mActionbar.setDisplayShowTitleEnabled(false);
 
-        webView = (WebView) findViewById(R.id.news_webView);
+        webView = (VideoEnabledWebView) findViewById(R.id.news_webView);
+        View nonVideoLayout = findViewById(R.id.nonVideoLayout);
+        ViewGroup videoLayout = (ViewGroup)findViewById(R.id.videoLayout);
+        View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null);
+
         webView.getSettings().setJavaScriptEnabled(true);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setAllowFileAccess(true);
+        settings.setLoadWithOverviewMode(true);
+
         webView.setWebViewClient(new myWebViewClient());
+
         String userAgent = webView.getSettings().getUserAgentString();
         webView.getSettings().setUserAgentString(userAgent.replace("Mobile Safari", "NewGate App"));
 
         WebViewPlugin webViewPlugin = new WebViewPlugin(this, webView);
         webView.addJavascriptInterface(webViewPlugin, PLUGIN_WEBVIEW);
 
+        webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView)
+        {
+            @Override
+            public void onProgressChanged(WebView view, int progress)
+            {
+                // Your code...
+            }
+        };
+        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
+        {
+            @Override
+            public void toggledFullscreen(boolean fullscreen)
+            {
+                // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+                if (fullscreen)
+                {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14)
+                    {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                    }
+                }
+                else
+                {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14)
+                    {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    }
+                }
+
+            }
+        });
+        webView.setWebChromeClient(webChromeClient);
+
         mNews =(News) intent.getExtras().getSerializable(HomeActivity.EXTRA_NEWS);
+
         webView.loadUrl(AppController.WEB_URL_NEWS_PREFIX + mNews.getId());
 
     }
@@ -75,8 +124,6 @@ public class DetailActivity extends ActionBarActivity {
             view.loadUrl(url);
             return true;
         }
-
-
     }
 
     public void updateActionBar() {
@@ -91,6 +138,8 @@ public class DetailActivity extends ActionBarActivity {
         switch (menuItem.getItemId()) {
             case R.id.menu_item_share:
                 openShareIntent();
+            case android.R.id.home:
+                onBackPressed();
         }
         return (super.onOptionsItemSelected(menuItem));
     }
@@ -117,5 +166,21 @@ public class DetailActivity extends ActionBarActivity {
         webView = null;
     }
 
-
+    @Override
+    public void onBackPressed()
+    {
+        // Notify the VideoEnabledWebChromeClient, and handle it ourselves if it doesn't handle it
+        if (!webChromeClient.onBackPressed())
+        {
+            if (webView.canGoBack())
+            {
+                webView.goBack();
+            }
+            else
+            {
+                // Close app (presumably)
+                super.onBackPressed();
+            }
+        }
+    }
 }

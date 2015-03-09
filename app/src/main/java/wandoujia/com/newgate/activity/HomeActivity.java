@@ -20,7 +20,7 @@ import wandoujia.com.newgate.adapter.CustomNewsListAdapter;
 import wandoujia.com.newgate.app.AppController;
 import wandoujia.com.newgate.fragment.NavigationDrawerFragment;
 import wandoujia.com.newgate.model.News;
-import wandoujia.com.newgate.util.EndlessScrollListener;
+import wandoujia.com.newgate.listener.EndlessScrollListener;
 import wandoujia.com.newgate.util.NewsDataServices;
 
 public class HomeActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener,NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -81,10 +81,10 @@ public class HomeActivity extends ActionBarActivity implements SwipeRefreshLayou
         newsDataServices.requestHomeNews(NewsDataServices.REGRESH_FLAG_INIT);
 
         // drawer layout
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerListview = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.drawer_listview);
-        // render left drawer UI
-        mDrawerListview.setUp(R.id.left_drawer, mDrawerLayout, mToolbar);
+//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        mDrawerListview = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.drawer_listview);
+//        // render left drawer UI
+//        mDrawerListview.setUp(R.id.left_drawer, mDrawerLayout, mToolbar);
 
     }
 

@@ -7,14 +7,21 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
+
+import wandoujia.com.newgate.R;
+import wandoujia.com.newgate.util.LruBitmapCache;
 
 public class AppController extends Application {
 
     public static String API_PREFIX = "http://play.wandoujia.com/v1/";
     public static String WEB_PREFIX = "http://play.wandoujia.com/";
-//    public static String API_PREFIX = "http://192.168.0.102/v1/";
-//    public static String WEB_PREFIX = "http://192.168.0.102/";
+//    public static String API_PREFIX = "http://100.64.74.5/v1/";
+//    public static String WEB_PREFIX = "http://100.64.74.5/";
 
     public static String API_FEEDBACK = API_PREFIX + "feedback/";
     public static String API_NEWS_PREFIX = API_PREFIX + "news/";
@@ -22,6 +29,8 @@ public class AppController extends Application {
     public static String WEB_URL_NEWS_PREFIX = WEB_PREFIX + "news/";
 
     public static String PREF_USER_SELECTED_FILTER = "news_filter";
+
+    private ImageLoader mImageLoader;
 
     /**
      * Log or request TAG
@@ -38,6 +47,15 @@ public class AppController extends Application {
      */
     private static AppController sInstance;
 
+
+    public synchronized Tracker getTracker() {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        analytics.getLogger()
+                .setLogLevel(Logger.LogLevel.VERBOSE);
+        Tracker t = analytics.newTracker(R.xml.global_tracker);
+        return t;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,6 +64,15 @@ public class AppController extends Application {
         sInstance = this;
     }
 
+    public ImageLoader getImageLoader() {
+        getRequestQueue();
+        if (mImageLoader == null) {
+            int cacheSize = 4 * 1024 * 1024;
+            mImageLoader = new ImageLoader(this.mRequestQueue,
+                    new LruBitmapCache(cacheSize));
+        }
+        return this.mImageLoader;
+    }
     /**
      * @return ApplicationController singleton instance
      */

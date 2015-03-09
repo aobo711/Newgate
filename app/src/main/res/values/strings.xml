@@ -26,4 +26,15 @@
     <string name="share_to">分享到</string>
 
     <string name="feedback_title">帮我们做得更好</string>
+
+    <string name="ga_category_home">home</string>
+    <string name="ga_category_tag">tag</string>
+    <string name="ga_action_click">click</string>
+    <string name="ga_action_scroll">scroll</string>
+    <string name="ga_action_show">scroll</string>
+    <string name="ga_action_pulldown">pulldown</string>
+    <string name="ga_label_filter">filter</string>
+    <string name="ga_label_loadmore">loadmore</string>
+
+    <string name="loading_video">正在加载视频...</string>
 </resources>

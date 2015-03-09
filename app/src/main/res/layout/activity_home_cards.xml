@@ -4,13 +4,10 @@
     android:id="@+id/swipe_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white">
-    <ListView
-        android:id="@+id/home_news_listview"
+    android:background="@color/card_background">
+    <android.support.v7.widget.RecyclerView
+        android:clipToPadding="false"
+        android:id="@+id/card_list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:divider="@color/list_divider"
-        android:dividerHeight="0.5dp"
-        android:listSelector="@drawable/list_row_selector"
-        android:layout_marginLeft="8dp" />
+        android:layout_height="fill_parent" />
 </android.support.v4.widget.SwipeRefreshLayout>

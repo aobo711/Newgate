@@ -18,7 +18,6 @@
     <style name="Theme.System" parent="@style/Theme.AppCompat.Light.NoActionBar" />
 
     <style name="Theme.Base" parent="@style/Theme.System">
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="colorPrimary">@color/app_primary</item>
         <item name="colorPrimaryDark">@color/app_primary_dark</item>
         <item name="android:radioButtonStyle">@style/RadioButton</item>

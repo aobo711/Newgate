@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginBottom="@dimen/card_gap"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:id="@+id/thumbnail"
+        android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/title"
+        android:textSize="@dimen/title"
+        android:autoText="false"
+        android:text="title"
+        android:textColor="@color/title_color"
+        android:maxLines="2"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:layout_marginTop="@dimen/card_padding"
+        android:layout_marginRight="@dimen/card_padding"
+        android:layout_marginBottom="@dimen/card_padding" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tags"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:layout_marginLeft="@dimen/card_padding"
+        android:layout_marginRight="@dimen/card_padding"
+        android:paddingBottom="@dimen/card_padding" />
+
+</LinearLayout>
+

@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import wandoujia.com.newgate.R;
 import wandoujia.com.newgate.adapter.CustomNewsListAdapter;
 import wandoujia.com.newgate.model.News;
-import wandoujia.com.newgate.util.EndlessScrollListener;
+import wandoujia.com.newgate.listener.EndlessScrollListener;
 import wandoujia.com.newgate.util.NewsDataServices;
 
 public class TagActivity extends ActionBarActivity {
@@ -60,6 +60,7 @@ public class TagActivity extends ActionBarActivity {
         // initialization list view
         newsDataServices = new NewsDataServices(this, newsList , mAdapter);
         newsDataServices.requestTagNews(tag, NewsDataServices.REGRESH_FLAG_INIT);
+
 
     }
 

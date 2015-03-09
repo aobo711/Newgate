@@ -1,11 +1,12 @@
-package wandoujia.com.newgate.util;
+package wandoujia.com.newgate.listener;
 
+import android.support.v7.widget.RecyclerView;
 import android.widget.AbsListView;
 
 /**
  * @link https://github.com/codepath/android_guides/wiki/Endless-Scrolling-with-AdapterViews
  */
-public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
+public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 1;
